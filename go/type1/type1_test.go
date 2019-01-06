@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"encoding/hex"
 	"strings"
+	"crypto/sha256"
 )
 
 func Test_ToLowerAZ(t *testing.T) {
@@ -26,7 +27,40 @@ func Test_NormalizeField(t *testing.T) {
 	assert.Equal("", NormalizeField(""))
 	assert.Equal("abc", NormalizeField("abc"))
 	assert.Equal("ab c", NormalizeField(" \r\n\tAb     C\t\n\r"))
+}
 
+func Test_checkwords(t *testing.T) {
+	assert := assert.New(t)
+
+	//Sanity: all words are unique and 3 letters.
+	sha := sha256.New()
+	assert.Equal(256, len(gCheckwords))
+	m := make(map[string]bool)
+	for _, word := range gCheckwords {
+		assert.Equal(3, len(word))
+		_, already := m[word]
+		assert.False(already)
+		m[word] = true
+		sha.Write([]byte(word))
+	}
+	chk := sha.Sum(nil)
+	assert.Equal("eb4388f6735a7778a49a8c2cefeaa429f1cadd2bb6a9dd0e777f9e21f07bbc9f", hex.EncodeToString(chk[:]))
+	//other implementations can use above hash to verify the word list
+
+	assert.Equal("pet", CalcCheckword("Hello World"))
+	assert.Equal("log", CalcCheckword("Hello Worlf"))
+
+	assert.True(IsCorrectCheckword("Hello World", "pEt"))  //case insensitive
+	assert.True(IsCorrectCheckword("Hello Worlf", "log"))
+
+	a, b := SplitCheckword("Hello Worldabc")
+	assert.Equal("Hello World", a)
+	assert.Equal("abc", b)
+
+	a, b = SplitCheckword("Hi")
+	assert.Equal("Hi", a)
+	assert.Equal("", b)	
+	
 }
 
 func Test_CalcSiteHash(t *testing.T) {

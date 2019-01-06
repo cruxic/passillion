@@ -91,6 +91,36 @@ func makeSiteId(site, personalization string) []byte {
 }
 
 /*
+Return a checksum of the given password in the form of a 3 letter English word.
+*/
+func CalcCheckword(password string) string {
+	hash := sha256.Sum256([]byte(password))
+	return gCheckwords[int(hash[0])]	
+}
+
+/*
+Split the string three characters from the end.  Returned checkword
+will be empty if string is too short
+*/
+func SplitCheckword(passwordWithCheckword string) (pass, checkword string) {
+	n := len(passwordWithCheckword)
+	if n > 3 {
+		pass = passwordWithCheckword[0:n-3]
+		checkword = passwordWithCheckword[n-3:]
+		return
+	} else {
+		//too short
+		pass = passwordWithCheckword
+		checkword = ""
+		return
+	}
+}
+
+func IsCorrectCheckword(password, checkword string) bool {
+	return CalcCheckword(password) == ToLowerAZ(checkword)
+}
+
+/*
 Hash the password with the site name using multiple bcrypt threads.
 The sitename and personalization parameters will be normalized with NormalizeField() before hashing.
 */

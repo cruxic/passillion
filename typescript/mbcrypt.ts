@@ -12,19 +12,29 @@ function checkParams(plaintextPassword:Uint8Array, salt:Uint8Array, cost:number)
 		throw new Error("mbcrypt: bcrypt cost must be between 4 and 32.");
 }
 
+//Return a copy of data with the thread index byte prepended
+function prependThreadByte(data:Uint8Array, threadIndex:number): Uint8Array {
+	let ar = new Uint8Array(1 + data.length);
+	ar[0] = (threadIndex+1) & 0xFF;
+	for (let i = 0; i < data.length; i++) {
+		ar[i+1] = data[i];
+	}
+	return ar;
+}
+
 /**Derive a distinct password for each thread to work on.  This
 returns a 64 character hex string.*/
 export function createDistinctThreadPassword(threadIndex:number, plaintextPassword:Uint8Array): string {
 	if (!plaintextPassword.length)
 		throw new Error("mbcrypt: empty password!");
-	let threadPassword = sha256.hmac(plaintextPassword, new Uint8Array([threadIndex + 1]));
+	let threadPassword = sha256.hash(prependThreadByte(plaintextPassword, threadIndex));
 	return hex.encode(threadPassword);
 }
 
 export function createDistinctThreadSalt(threadIndex:number, originalSalt:Uint8Array): Uint8Array {
 	if (originalSalt.length != bcrypt.saltSize)
 		throw new Error("wrong originalSalt length!");
-	let newSalt = sha256.hmac(originalSalt, new Uint8Array([threadIndex + 1]));
+	let newSalt = sha256.hash(prependThreadByte(originalSalt, threadIndex));
 	return newSalt.slice(0, bcrypt.saltSize);
 }
 

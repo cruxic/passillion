@@ -66,6 +66,10 @@ export class MbcryptWorkerManager {
 		this.nWorkersDone = numWorkerThreads;
 	}
 
+	getNumWorkers():number {
+		return this.workers.length;
+	}
+
 	/*
 	Calculate mbcrypt.
 	*/

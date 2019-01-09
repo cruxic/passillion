@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Wordlist - CalcPass</title>
+<script type="text/javascript" src="../js/module-loader.js"></script>
+<script type="text/javascript" src="create.js"></script>
+<style type="text/css">
+
+body {
+	font-family: sans-serif;
+	margin: 1em;
+}
+
+/*Credit card dimensions: 85.60 × 53.98 mm*/
+
+#quadTopL, #quadTopR, #quadBotL, #quadBotR {
+	font-family: sans-serif;
+	width: 51mm;
+	/*background-color: #dddddd;*/
+	display: inline-block;
+}
+
+#quadTopL, #quadBotL {
+	border-right: 2px solid black;
+}
+
+#quadTopL, #quadTopR {
+	padding-bottom: 1mm;
+	/*border-bottom: 2px solid black;*/
+}
+
+#quadTopR, #quadBotR {
+	padding-left: 2px;
+}
+
+
+#hdr1, #hdr2 {
+	text-align: center;
+		
+}
+
+
+div.num, div.letter {
+	width: 6mm;
+	display: inline-block;
+	text-align: center;
+}
+
+div.num {
+	font-size: 2.25mm;
+	font-weight: bold;
+	border-radius: 1mm;
+	background-color: black;
+	color: white;
+}
+
+
+div.cell {
+	width: 10mm;
+	display: inline-block;
+	text-align: center;
+	/*background-color: green;*/
+}
+
+div.columnHeader {
+	width: 15mm;
+	display: inline-block;
+	text-align: center;	
+}
+	
+div.row, div.headerRow {
+	height: 3.75mm;
+	font-size: 3.25mm;
+	font-family: sans-serif;
+	vertical-align: middle;
+}
+
+div.headerRow {
+	border: 0.25mm solid black;
+	background-color: #eeeeee;
+}
+
+
+div.letter {
+	font-weight: bold;
+	font-size: 3.25mm;
+}
+
+
+</style>
+</head>
+<body>
+	
+
+<div id="quadTopL"></div><div id="quadTopR"></div>
+<br/>
+<div id="quadBotL"></div><div id="quadBotR"></div>
+
+</body>
+</html>

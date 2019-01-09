@@ -7,7 +7,7 @@ import {HmacCounterByteSource_test} from './HmacCounterByteSource_test'
 import bcrypt_test from './bcrypt_test'
 import mbcrypt_test from './mbcrypt_test'
 import {MbcryptWorkerManager_test} from './mbcrypt_workermanager_test';
-//import {calcpass2017a_test} from './calcpass2017a_test'
+import {passillion_type1_test} from './passillion_type1_test'
 
 async function run_tests() {
 	assert_test();
@@ -37,9 +37,9 @@ async function run_tests() {
 	await MbcryptWorkerManager_test();
 	console.log('MbcryptWorkerManager_test PASS');
 
-	//console.log('Testing calcpass2017a...');
-	//await calcpass2017a_test();
-	//console.log('calcpass2017a PASS');
+	console.log('Testing passillion_type1...');
+	await passillion_type1_test();
+	console.log('passillion_type1 PASS');
 
 	console.log('\nAll tests PASS');
 }

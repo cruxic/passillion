@@ -46,21 +46,36 @@ func Test_checkwords(t *testing.T) {
 	chk := sha.Sum(nil)
 	assert.Equal("eb4388f6735a7778a49a8c2cefeaa429f1cadd2bb6a9dd0e777f9e21f07bbc9f", hex.EncodeToString(chk[:]))
 	//other implementations can use above hash to verify the word list
+}
+
+func Test_CalcCheckword(t *testing.T) {
+	assert := assert.New(t)
 
 	assert.Equal("pet", CalcCheckword("Hello World"))
 	assert.Equal("log", CalcCheckword("Hello Worlf"))
 
 	assert.True(IsCorrectCheckword("Hello World", "pEt"))  //case insensitive
 	assert.True(IsCorrectCheckword("Hello Worlf", "log"))
+}
+
+func Test_SplitCheckword(t *testing.T) {
+	assert := assert.New(t)
 
 	a, b := SplitCheckword("Hello Worldabc")
 	assert.Equal("Hello World", a)
 	assert.Equal("abc", b)
 
+	a, b = SplitCheckword(" \tHello World \t  abc \t\n")
+	assert.Equal("Hello World", a)
+	assert.Equal("abc", b)
+
+	a, b = SplitCheckword("Hello World ab")
+	assert.Equal("Hello World ab", a)
+	assert.Equal("", b)
+
 	a, b = SplitCheckword("Hi")
 	assert.Equal("Hi", a)
-	assert.Equal("", b)	
-	
+	assert.Equal("", b)
 }
 
 func Test_CalcSiteHash(t *testing.T) {
@@ -111,12 +126,18 @@ func Test_GetWordCoordinates(t *testing.T) {
 	assert.Equal("A1 A2 A3 A4", s)
 
 	//Generate all 256 possible coordinates
+	sha := sha256.New()
 	all := make([]string, 0, 256)
 	for i := 0; i < 256; i += 32 {
 		coords, err = GetWordCoordinates(SiteHash(makeSeq(i, 32)), 32)
 		assert.NoError(err)
 		all = append(all, coords...)
+		sha.Write([]byte(strings.Join(coords, " ")))
 	}
+
+	h := sha.Sum(nil)
+	assert.Equal("09c017822998970604a28fe870753b90567f5b4731626d0fc7ca9137f2867b85", hex.EncodeToString(h))
+	//Implementations in other languages can use the above hash to verify all coordinates
 
 	//Spot check first and last of every column
 

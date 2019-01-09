@@ -95,25 +95,28 @@ Return a checksum of the given password in the form of a 3 letter English word.
 */
 func CalcCheckword(password string) string {
 	hash := sha256.Sum256([]byte(password))
-	return gCheckwords[int(hash[0])]	
+	return gCheckwords[int(hash[0])]
 }
 
 /*
-Split the string three characters from the end.  Returned checkword
-will be empty if string is too short
+Remove the 3 letter checkword suffix from the password.
+Returns the password and the checkword. Both have whitespace removed.
 */
 func SplitCheckword(passwordWithCheckword string) (pass, checkword string) {
+	passwordWithCheckword = strings.TrimSpace(passwordWithCheckword)
 	n := len(passwordWithCheckword)
 	if n > 3 {
-		pass = passwordWithCheckword[0:n-3]
-		checkword = passwordWithCheckword[n-3:]
-		return
-	} else {
-		//too short
-		pass = passwordWithCheckword
-		checkword = ""
-		return
+		pass = strings.TrimSpace(passwordWithCheckword[0:n-3])
+		checkword = strings.TrimSpace(passwordWithCheckword[n-3:])
+		if len(checkword) == 3 {
+			return
+		}
 	}
+
+	//too short
+	pass = passwordWithCheckword
+	checkword = ""
+	return
 }
 
 func IsCorrectCheckword(password, checkword string) bool {
